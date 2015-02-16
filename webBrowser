@@ -19,8 +19,7 @@ namespace WindowsFormsApplication1
         private void Form1_Load(object sender, EventArgs e)
         {
             this.webBrowser1.Url = new Uri("https://kintai.basenet.co.jp/basekin/WMMN0101.cfm");
-            //this.webBrowser1.Url = new Uri("C:/Users/base/Desktop/form/real.htm");
-            //this.webBrowser1.Url = new Uri("http://code.google.com/hosting/createProject");
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -33,32 +32,41 @@ namespace WindowsFormsApplication1
             else
             {
                 int fday = Convert.ToInt32(this.textBox1.Text);
-                String txt = "value:";
-                HtmlElementCollection hec = this.webBrowser1.Document.All.GetElementsByName("txtSTm");
-                foreach (HtmlElement pageElement in hec)
-                {
-                    txt += pageElement.InnerText;
-                    txt += "*  ";
-                }
-                this.richTextBox1.Text = txt;
-                foreach (HtmlElement pageElement in hec)
+                //iframe construct: cannot  webBrowser1.Document.All (important!)
+                HtmlWindow hw = this.webBrowser1.Document.Window.Frames["WM_FUNC"];
+
+                foreach (HtmlElement pageElement1 in hw.Document.All.GetElementsByName("txtSTm"))
                 {
                     if (fday % 7 != 0 && fday % 7 != 6)
                     {
-                        pageElement.InnerText = this.textBox2.Text;
+                        pageElement1.InnerText = this.textBox2.Text;
                     }
                     fday++;
                 }
-                foreach (HtmlElement pageElement in this.webBrowser1.Document.All.GetElementsByName("txtETm"))
+                fday = Convert.ToInt32(this.textBox1.Text);
+                foreach (HtmlElement pageElement2 in hw.Document.All.GetElementsByName("txtETm"))
                 {
                     if (fday % 7 != 0 && fday % 7 != 6)
                     {
-                        pageElement.SetAttribute("value", this.textBox3.Text);
+                        pageElement2.SetAttribute("value", this.textBox3.Text);
                     }
                     fday++;
                 }
             }
             
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            HtmlElement he1 = this.webBrowser1.Document.All["txtID"];
+            HtmlElement he2 = this.webBrowser1.Document.All["txtPass"];
+            
+            he1.SetAttribute("value",this.textBox4.Text);
+            he2.SetAttribute("value",this.textBox5.Text);
+
+            this.webBrowser1.Document.All["btnLogin"].InvokeMember("click");
+        }
+
+       
     }
 }
