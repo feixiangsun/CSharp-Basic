@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace ConsoleApplication2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            DeleteFolder("D://VO1L23//ws3_all",".svn");
+            Console.ReadKey();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dir">directory path</param>
+        /// <param name="delname">direcotry name</param>
+         private static void DeleteFolder(string dir, string delname)
+        {
+            if (Directory.Exists(dir))
+            {
+                foreach (string d in Directory.GetFileSystemEntries(dir))
+                {
+                    string tmpd = d.Substring(0, d.LastIndexOf("\\")) + "\\" + delname;
+                    if (Directory.Exists(d))
+                    {
+                        if (d == tmpd)
+                        {
+                            //DirectoryInfo floder = new DirectoryInfo(d);
+                           // floder.Attributes = FileAttributes.Normal;
+                            //floder.Delete();
+                            Directory.Delete(d, true);
+                        }
+                        else
+                            DeleteFolder(d, delname);//递归删除子文件夹   
+                    }
+                    else if (File.Exists(d))
+                    {
+                        if (d == tmpd)
+                            File.Delete(d);
+                    }
+                }
+            }
+        }
+
+       
+    }
+}
